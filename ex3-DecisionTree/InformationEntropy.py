@@ -36,22 +36,27 @@ def init_dataset():
 
 
 # noinspection PyShadowingNames
-def calculate_gain(root_ent, attr):
+def calculate_gain_ratio(root_ent, attr):
     """
-    计算各属性信息增益
+    计算各属性信息增益率
     :param root_ent: 根节点计算出的信息熵
     :param attr: 属性名
     """
+    # 信息增益值
     _sum_gain = 0
     _n = len(full_dataset)
+    # 固有值
+    _iv = 0
     # 生成样本集在属性attr上的取值列表
     l_val = list(set(full_dataset[attr].values))
     for val in l_val:
         # 样本集在attr上相同取值的行
         l_same_val = full_dataset[full_dataset[attr].isin([val])]
-        # 计算 TODO 改为gain_rate
+        # 计算 gain
         _sum_gain += len(l_same_val) / _n * calculate_ent(l_same_val)
-    return root_ent - _sum_gain
+        # 计算 iv
+        _iv += len(l_same_val) / _n * math.log(len(l_same_val) / _n, 2)
+    return (root_ent - _sum_gain) / (_iv * -1)
 
 
 if __name__ == '__main__':
@@ -62,5 +67,5 @@ if __name__ == '__main__':
     l_attr = full_dataset.columns.values.tolist()
     l_attr.remove('好瓜')
     for attr in l_attr:
-        gain = calculate_gain(root_ent, attr)
-        print(gain)
+        gain_ratio = calculate_gain_ratio(root_ent, attr)
+        print(gain_ratio)
