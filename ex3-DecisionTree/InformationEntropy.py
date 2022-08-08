@@ -10,7 +10,11 @@ import pandas as pd
 import math
 
 # 连续属性
+from pandas import DataFrame
+
 l_continuity_attr = ['密度', '含糖率']
+
+RESULT_ATTR = '好瓜'
 
 
 def init_dataset():
@@ -23,6 +27,18 @@ class DecisionTreeNode(object):
     """
     决策树节点
     """
+    # 此节点所属分类
+    type = ''
+    # 是否叶节点
+    is_leaf = False
+    # 最佳划分属性
+    optimal_partition_attr = ''
+    # 分支节点
+    children = []
+    # 样本集D中样本数最多的类
+    max_samples_cnt_type = ''
+    # 父节点取值
+    parent_val = ''
     # 当前节点剩余的训练集D
     _dataset = pd.DataFrame()
     # 当前节点可用的属性集A
@@ -30,16 +46,49 @@ class DecisionTreeNode(object):
     # 当前根节点的Ent值
     _root_ent = 0
 
+    def __init__(self, is_leaf=False, optimal_partition_attr='', parent_val=''):
+        self._max_samples_cnt_type = None
+        self.is_leaf = is_leaf
+        self.optimal_partition_attr = optimal_partition_attr
+        self.parent_val = parent_val
+        self.children = []
+
     # noinspection PyShadowingNames
-    def __init__(self, dataset, attr_list):
+    def generate_tree(self, dataset: DataFrame, attr_list: list):
         self._dataset = dataset
         # 属性列表
         self._attr_list = attr_list
         # 根节点信息熵
         self._root_ent = self.calculate_ent(dataset)
+        self._max_samples_cnt_type = self.get_max_samples_type()
+        if self.is_all_same_type():
+            self.is_leaf = True
+            self.type = self._max_samples_cnt_type
+            return
+
+        if len(attr_list) == 0 or self.is_all_same_val():
+            self.is_leaf = True
+            self.type = self._max_samples_cnt_type
+            return
+
         # 最佳划分属性
-        optimal_partition_attr = self.choice_optimal_partition_attr()
-        print(optimal_partition_attr)
+        self.optimal_partition_attr = self.choice_optimal_partition_attr()
+        _val_list = list(self._dataset.groupby(self.optimal_partition_attr).groups.keys())
+        for optimal_attr_val in _val_list:
+            child_dataset = self._dataset[self._dataset[self.optimal_partition_attr].isin([optimal_attr_val])]
+            # 连续值不移除
+            child_attr_list = [attr for attr in self._attr_list if
+                               attr in l_continuity_attr or attr != self.optimal_partition_attr]
+            if len(child_dataset) == 0:
+                # TODO 此分支如何走到暂不理解
+                child = DecisionTreeNode(is_leaf=True, optimal_partition_attr=self._max_samples_cnt_type,
+                                         parent_val=str(optimal_attr_val))
+                self.children.append(child)
+                return
+            else:
+                child = DecisionTreeNode(parent_val=str(optimal_attr_val))
+                child.generate_tree(dataset=child_dataset, attr_list=child_attr_list)
+                self.children.append(child)
 
     @staticmethod
     def calculate_ent(children_dataset):
@@ -50,7 +99,7 @@ class DecisionTreeNode(object):
         _sum = 0
         _n = len(children_dataset)
         # 求和计算每类的信息熵
-        for label, df in children_dataset.groupby('好瓜'):
+        for label, df in children_dataset.groupby(RESULT_ATTR):
             _pk = len(df) / _n
             # 计算
             _sum += _pk * math.log(_pk, 2)
@@ -123,9 +172,37 @@ class DecisionTreeNode(object):
                 optimal_partition_attr = attr
         return optimal_partition_attr
 
+    def is_all_same_type(self):
+        """
+        判断训练集D中样本都属于同一类别C
+        """
+        return len(self._dataset.groupby(RESULT_ATTR)) == 1
+
+    def is_all_same_val(self):
+        """
+        判断训练集D中所有样本的所有属性取值相同
+        """
+        for attr in self._attr_list:
+            if len(self._dataset.groupby(attr)) != 1:
+                return False
+
+        return True
+
+    def get_max_samples_type(self):
+        """
+        D中样本数最多的类，即决定此节点的类型，以求众数的方式实现
+        :return: 分类结果
+        """
+        return self._dataset[RESULT_ATTR].mode().values[0]
+
 
 if __name__ == '__main__':
     dataset = init_dataset()
     attr_list = dataset.columns.values.tolist()
-    attr_list.remove('好瓜')
-    decision_tree = DecisionTreeNode(dataset=dataset, attr_list=attr_list)
+    attr_list.remove(RESULT_ATTR)
+    decision_tree = DecisionTreeNode()
+    decision_tree.generate_tree(dataset=dataset, attr_list=attr_list)
+    # TODO 打印决策树
+    # TODO 开关控制使用增益值还是增益率
+    # TODO 判断生成的决策树是否正确
+    print(decision_tree)
