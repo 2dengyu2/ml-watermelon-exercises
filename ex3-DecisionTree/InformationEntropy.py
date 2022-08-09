@@ -8,11 +8,16 @@
 
 import pandas as pd
 import math
+from pandas import DataFrame
+import json
+
+# 是否启用增益率，为False表示使用增益值
+IS_ENABLE_GAIN_RATIO = False
 
 # 连续属性
-from pandas import DataFrame
-
 l_continuity_attr = ['密度', '含糖率']
+# 排除属性
+l_exclude_attr = ['编号']
 
 RESULT_ATTR = '好瓜'
 
@@ -139,10 +144,12 @@ class DecisionTreeNode(object):
                 _sum_gain = 0
                 for l_ge_or_lt in l_same_val:
                     _sum_gain += len(l_ge_or_lt) / _n * self.calculate_ent(l_ge_or_lt)
-                # 参考 https://arxiv.org/pdf/cs/9603103.pdf 3. Modified Assessment of Continuous Attribute
-                # 此时增益率需要减去log2(N-1)/|D|，N为不重复的值的个数，N-1即划分点的个数，|D|为样本总数
-                _iv = math.log(len(l_divide), 2) / _n
-                _sum_gain = self._root_ent - _sum_gain - _iv
+                _sum_gain = self._root_ent - _sum_gain
+                if IS_ENABLE_GAIN_RATIO:
+                    # 参考 https://arxiv.org/pdf/cs/9603103.pdf 3. Modified Assessment of Continuous Attribute
+                    # 此时增益率需要减去log2(N-1)/|D|，N为不重复的值的个数，N-1即划分点的个数，|D|为样本总数
+                    _iv = math.log(len(l_divide), 2) / _n
+                    _sum_gain -= _iv
                 _max_gain = max(_max_gain, _sum_gain)
             return _max_gain
         else:
@@ -156,7 +163,10 @@ class DecisionTreeNode(object):
                 _sum_gain += len(l_same_val) / _n * self.calculate_ent(l_same_val)
                 # 计算 iv
                 _iv += len(l_same_val) / _n * math.log(len(l_same_val) / _n, 2)
-            return (self._root_ent - _sum_gain) / (_iv * -1)
+            _gain = self._root_ent - _sum_gain
+            if IS_ENABLE_GAIN_RATIO:
+                _gain /= (_iv * -1)
+            return _gain
 
     def choice_optimal_partition_attr(self):
         """
@@ -196,13 +206,32 @@ class DecisionTreeNode(object):
         return self._dataset[RESULT_ATTR].mode().values[0]
 
 
+def tree_to_json(node):
+    node_obj = {
+        'attr': node.optimal_partition_attr,
+    }
+    if node.is_leaf:
+        node_obj['type'] = node.type
+        children = None
+    else:
+        children = []
+        for child in node.children:
+            child_node = tree_to_json(child)
+            child_node['value'] = child.parent_val
+            children.append(child_node)
+
+    node_obj['children'] = children
+    return node_obj
+
+
 if __name__ == '__main__':
     dataset = init_dataset()
     attr_list = dataset.columns.values.tolist()
     attr_list.remove(RESULT_ATTR)
+    for exclude_attr in l_exclude_attr:
+        attr_list.remove(exclude_attr)
     decision_tree = DecisionTreeNode()
     decision_tree.generate_tree(dataset=dataset, attr_list=attr_list)
-    # TODO 打印决策树
-    # TODO 开关控制使用增益值还是增益率
-    # TODO 判断生成的决策树是否正确
-    print(decision_tree)
+    # 打印决策树
+    tree_root_node = tree_to_json(decision_tree)
+    print(json.dumps([tree_root_node], ensure_ascii=False))
