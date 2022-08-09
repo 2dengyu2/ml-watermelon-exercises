@@ -24,8 +24,11 @@ RESULT_ATTR = '好瓜'
 
 def init_dataset():
     with open('../dataset/watermelon-dataset-3.0.csv', 'r', encoding='utf-8') as f:
-        return pd.read_csv(f)
-        # print(dataset)
+        _dataset = pd.read_csv(f)
+        _dataset.loc[_dataset[RESULT_ATTR].isin(['是']), RESULT_ATTR] = '好瓜'
+        _dataset.loc[_dataset[RESULT_ATTR].isin(['否']), RESULT_ATTR] = '坏瓜'
+        # print(_dataset)
+        return _dataset
 
 
 class DecisionTreeNode(object):
@@ -244,8 +247,8 @@ def tree_to_json(node):
             child_node = tree_to_json(child)
             child_node['value'] = child.parent_val
             children.append(child_node)
-
-    node_obj['children'] = children
+    if children is not None and len(children) > 0:
+        node_obj['children'] = children
     return node_obj
 
 
