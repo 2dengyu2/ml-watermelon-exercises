@@ -50,13 +50,15 @@ class DecisionTreeNode(object):
     _attr_list = []
     # 当前根节点的Ent值
     _root_ent = 0
+    # 连续属性最佳分界点
+    continuity_attr_best_val = 0
 
-    def __init__(self, is_leaf=False, optimal_partition_attr='', parent_val=''):
-        self._max_samples_cnt_type = None
+    def __init__(self, is_leaf=False, max_samples_cnt_type='', parent_val=''):
+        self._max_samples_cnt_type = max_samples_cnt_type
         self.is_leaf = is_leaf
-        self.optimal_partition_attr = optimal_partition_attr
         self.parent_val = parent_val
         self.children = []
+        self.continuity_attr_best_val = 0
 
     # noinspection PyShadowingNames
     def generate_tree(self, dataset: DataFrame, attr_list: list):
@@ -78,20 +80,34 @@ class DecisionTreeNode(object):
 
         # 最佳划分属性
         self.optimal_partition_attr = self.choice_optimal_partition_attr()
-        _val_list = list(self._dataset.groupby(self.optimal_partition_attr).groups.keys())
+        # 如果是连续值，可选值手动设置为分界点
+        if self.optimal_partition_attr in l_continuity_attr:
+            _val_list = [-1, 1]
+        else:
+            _val_list = list(self._dataset.groupby(self.optimal_partition_attr).groups.keys())
         for optimal_attr_val in _val_list:
-            child_dataset = self._dataset[self._dataset[self.optimal_partition_attr].isin([optimal_attr_val])]
-            # 连续值不移除
-            child_attr_list = [attr for attr in self._attr_list if
-                               attr in l_continuity_attr or attr != self.optimal_partition_attr]
+            if self.optimal_partition_attr in l_continuity_attr:
+                best_val = self.continuity_attr_best_val
+                if optimal_attr_val == -1:
+                    child_dataset = self._dataset[self._dataset[self.optimal_partition_attr].astype(float) <= best_val]
+                    parent_val = '是'
+                else:
+                    child_dataset = self._dataset[self._dataset[self.optimal_partition_attr].astype(float) > best_val]
+                    parent_val = '否'
+                # 连续值不移除属性
+                child_attr_list = [attr for attr in self._attr_list]
+            else:
+                parent_val = str(optimal_attr_val)
+                child_dataset = self._dataset[self._dataset[self.optimal_partition_attr].isin([optimal_attr_val])]
+                child_attr_list = [attr for attr in self._attr_list if attr != self.optimal_partition_attr]
             if len(child_dataset) == 0:
                 # TODO 此分支如何走到暂不理解
-                child = DecisionTreeNode(is_leaf=True, optimal_partition_attr=self._max_samples_cnt_type,
-                                         parent_val=str(optimal_attr_val))
+                child = DecisionTreeNode(is_leaf=True, max_samples_cnt_type=self._max_samples_cnt_type,
+                                         parent_val=parent_val)
                 self.children.append(child)
                 return
             else:
-                child = DecisionTreeNode(parent_val=str(optimal_attr_val))
+                child = DecisionTreeNode(parent_val=parent_val)
                 child.generate_tree(dataset=child_dataset, attr_list=child_attr_list)
                 self.children.append(child)
 
@@ -134,6 +150,7 @@ class DecisionTreeNode(object):
         l_val = list(set(self._dataset[attr].values))
         # 生成样本集在属性attr上的取值列表
         if attr in l_continuity_attr:
+            # 如果是连续属性
             # 信息增益值
             _max_gain = 0
             l_divide = self.get_candidate_divide_list(l_val)
@@ -150,9 +167,12 @@ class DecisionTreeNode(object):
                     # 此时增益率需要减去log2(N-1)/|D|，N为不重复的值的个数，N-1即划分点的个数，|D|为样本总数
                     _iv = math.log(len(l_divide), 2) / _n
                     _sum_gain -= _iv
-                _max_gain = max(_max_gain, _sum_gain)
+                if _sum_gain > _max_gain:
+                    _max_gain = _sum_gain
+                    self.continuity_attr_best_val = val
             return _max_gain
         else:
+            # 如果是离散属性
             # 信息增益值
             _sum_gain = 0
             # 遍历所有可能取值
@@ -175,11 +195,14 @@ class DecisionTreeNode(object):
         """
         optimal_partition_attr = ''
         d_optimal_partition_gain_ratio = 0
+        continuity_attr_best_val = 0
         for attr in self._attr_list:
             gain_ratio = self.calculate_gain_ratio(attr)
             if gain_ratio > d_optimal_partition_gain_ratio:
                 d_optimal_partition_gain_ratio = gain_ratio
                 optimal_partition_attr = attr
+                continuity_attr_best_val = self.continuity_attr_best_val
+        self.continuity_attr_best_val = continuity_attr_best_val
         return optimal_partition_attr
 
     def is_all_same_type(self):
@@ -207,13 +230,15 @@ class DecisionTreeNode(object):
 
 
 def tree_to_json(node):
-    node_obj = {
-        'attr': node.optimal_partition_attr,
-    }
+    node_obj = {}
     if node.is_leaf:
         node_obj['type'] = node.type
         children = None
     else:
+        if node.optimal_partition_attr in l_continuity_attr:
+            node_obj['attr'] = node.optimal_partition_attr + '≤' + str(node.continuity_attr_best_val) + '?'
+        else:
+            node_obj['attr'] = node.optimal_partition_attr + '=?'
         children = []
         for child in node.children:
             child_node = tree_to_json(child)
