@@ -35,7 +35,6 @@ def init_dataset():
 
 class InformationEntropyDecisionTreeNode(DecisionTreeNode):
 
-    # noinspection PyShadowingNames
     def generate_tree(self, dataset: DataFrame, attr_list: list):
         self._dataset = dataset
         # 属性列表
@@ -170,13 +169,13 @@ class InformationEntropyDecisionTreeNode(DecisionTreeNode):
 
 
 if __name__ == '__main__':
-    dataset = init_dataset()
-    attr_list = dataset.columns.values.tolist()
-    attr_list.remove(RESULT_ATTR)
+    dataset_all = init_dataset()
+    attr_list_all = dataset_all.columns.values.tolist()
+    attr_list_all.remove(RESULT_ATTR)
     for exclude_attr in l_exclude_attr:
-        attr_list.remove(exclude_attr)
+        attr_list_all.remove(exclude_attr)
     decision_tree = InformationEntropyDecisionTreeNode()
-    decision_tree.generate_tree(dataset=dataset, attr_list=attr_list)
+    decision_tree.generate_tree(dataset=dataset_all, attr_list=attr_list_all)
     # 打印决策树
     tree_root_node = decision_tree.tree_to_json(decision_tree)
     print(json.dumps([tree_root_node], ensure_ascii=False))

@@ -66,7 +66,6 @@ class DecisionTreeNode(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    # noinspection PyShadowingNames
     def generate_tree(self, dataset: DataFrame, attr_list: list):
         pass
 
