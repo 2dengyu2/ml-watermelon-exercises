@@ -12,9 +12,13 @@
 
 > Chapter 4 Decision Tree
 
+- [决策树基类](DecisionTree)
+
+  抽离了公共方法
+
 - [4.3 信息熵进行划分选择的决策树算法](ex3-DecisionTree)
 
-    > 分类结果
+  > 分类结果
 
     ``` json
     [
