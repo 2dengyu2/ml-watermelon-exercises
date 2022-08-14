@@ -4,67 +4,65 @@
 
 ## 当前章节
 
+### 公式推导
+
+#### 3.5=>3.7
+
+由
+
+$$
+\frac{\partial E_{(w,b)}}{\partial w}=2\left(w\sum_{i=1}^{m}x_i^2-\sum_{i=1}^m{(y_i-b)}x_i\right)\tag{3.5}
+$$
+
+推导至
+
+$$
+w=\frac{\sum_{i=1}^my_i(x_i)-\overline{x}}{\sum_{i=1}^mx^2-\frac{1}{m}\left(\sum_{i=1}^mx_i\right)^2}\tag{3.7}
+$$
+
+推导过程：
+
+已知(3.8)
+
+$$
+b=\frac{1}{m}\sum_{i=1}^m(y_i-wx_i)\tag{3.8}
+$$
+
+$$
+则b=\frac1m\sum_{i=1}^my_i-\frac1mw\sum_{i=1}^mx_i\tag{※}
+$$
+
+由(3.5)
+
+$$
+令 \frac{\partial E_{(w,b)}}{\partial w}=0
+$$
+
+$$
+w\sum_{i=1}^mx_i^2-\sum_{i=1}^mx_iy_i+b\sum_{i=1}^mx_i=0
+$$
+
+将(※)带入上式
+
+$$
+\begin{equation}
+\begin{split}
+w\sum_{i=1}^{m}x_i^2-\sum_{i=1}^m{(y_i-b)}x_i&=0\\
+w\sum_{i=1}^{m}x_i^2-\sum_{i=1}^my_ix_i+b\sum_{i=1}^mx_i&=0\\
+带入(※)消去b\\
+w\sum_{i=1}^mx_i^2+(\frac1m\sum_{i=1}^my_i-\frac1mw\sum_{i=1}^mx_i)\sum_{i=1}^mx_i&=\sum_{i=1}^mx_iy_i\\
+w\sum_{i=1}^mx_i^2+\frac1m\sum_{i=1}^mx_i\sum_{i=1}^my_i-\frac1mw\left(\sum_{i=1}^mx_i\right)^2&=\sum_{i=1}^mx_iy_i\\
+w\left[\sum_{i=1}^mx_i^2-\frac1m\left(\sum_{i=1}^mx_i\right)^2\right]&=\sum_{i=1}^mx_iy_i-\frac1m\sum_{i=1}^mx_i\sum_{i=1}^my_i\\
+使用x的均值\overline x=\frac1m\sum_{i=1}^mx_i简化右侧可得\\
+w\left[\sum_{i=1}^mx_i^2-\frac1m\left(\sum_{i=1}^mx_i\right)^2\right]&=\sum_{i=1}^mx_iy_i-\overline x\sum_{i=1}^my_i\\
+w\left[\sum_{i=1}^mx_i^2-\frac1m\left(\sum_{i=1}^mx_i\right)^2\right]&=\sum_{i=1}^my_i(x_i-\overline x)\\
+整理可得(3.7)
+\end{split}
+\end{equation}
+$$
+
 ### 数据集
 
 - [西瓜数据集3.0](dataset/watermelon-dataset-3.0.csv)
 
-### 第4章 决策树
-
-> Chapter 4 Decision Tree
-
-- [决策树基类](DecisionTree)
-
-  抽离了公共方法
-
-- [4.3 信息熵进行划分选择的决策树算法](ex3-DecisionTree)
-
-  > 分类结果
-
-    ``` json
-    [
-        {
-            "attr": "纹理=?",
-            "children": [
-                {
-                    "type": "坏瓜",
-                    "value": "模糊"
-                },
-                {
-                    "attr": "密度≤0.3815?",
-                    "children": [
-                        {
-                            "type": "坏瓜",
-                            "value": "是"
-                        },
-                        {
-                            "type": "好瓜",
-                            "value": "否"
-                        }
-                    ],
-                    "value": "清晰"
-                },
-                {
-                    "attr": "触感=?",
-                    "children": [
-                        {
-                            "type": "坏瓜",
-                            "value": "硬滑"
-                        },
-                        {
-                            "type": "好瓜",
-                            "value": "软粘"
-                        }
-                    ],
-                    "value": "稍糊"
-                }
-            ]
-        }
-    ] 
-    ```
-
-- [4.4 基尼指数进行划分选择的决策树算法](ex4-DecisionTree)
-
-  > 分类结果
-
-  同上
-
+### 第3章 线性回归
