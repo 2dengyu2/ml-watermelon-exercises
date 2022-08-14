@@ -8,16 +8,16 @@
 
 #### 3.5=>3.7
 
-由
+由(3.5)
 
 $$
-\frac{\partial E_{(w,b)}}{\partial w}=2\left(w\sum_{i=1}^{m}x_i^2-\sum_{i=1}^m{(y_i-b)}x_i\right)\tag{3.5}
+\frac{\partial E_{(w,b)}}{\partial w}=2\left(w\sum_{i=1}^{m}x_i^2-\sum_{i=1}^m{(y_i-b)}x_i\right)
 $$
 
-推导至
+推导至(3.7)
 
 $$
-w=\frac{\sum_{i=1}^my_i(x_i)-\overline{x}}{\sum_{i=1}^mx^2-\frac{1}{m}\left(\sum_{i=1}^mx_i\right)^2}\tag{3.7}
+w=\frac{\sum_{i=1}^my_i(x_i-\overline x)}{\sum_{i=1}^mx^2-\frac{1}{m}\left(\sum_{i=1}^mx_i\right)^2}
 $$
 
 推导过程：
@@ -25,11 +25,13 @@ $$
 已知(3.8)
 
 $$
-b=\frac{1}{m}\sum_{i=1}^m(y_i-wx_i)\tag{3.8}
+b=\frac{1}{m}\sum_{i=1}^m(y_i-wx_i)
 $$
 
+得到(※)
+
 $$
-则b=\frac1m\sum_{i=1}^my_i-\frac1mw\sum_{i=1}^mx_i\tag{※}
+则b=\frac1m\sum_{i=1}^my_i-\frac1mw\sum_{i=1}^mx_i
 $$
 
 由(3.5)
