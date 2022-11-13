@@ -11,10 +11,10 @@
 
 ### TODO list
 
-- [ ] `__main__`框架
-- [ ] 神经网络的连接权及阈值设计
-- [ ] 离散属性值的数值化
-- [ ] 初始化连接权及阈值
+- [x] `__main__`框架
+- [x] 神经网络的连接权及阈值设计
+- [x] 离散属性值的数值化
+- [x] 初始化连接权及阈值
 - [ ] 打印或可视化神经网络
 - [ ] sigmoid函数
 - [ ] 计算样本输出$\hat{y}_k$
@@ -26,7 +26,7 @@
 
 ### 数据结构
 
-连接权及阈值input_layer、hidden_layer、output_layer、connection_weight
+连接权及阈值input_layer、hidden_layer、output_layer、connection_i_h、connection_h_o
 
 - input_layer中的节点 $x_i$ 包含以下属性：
 
@@ -47,11 +47,11 @@
   | 1    | output    | 分类结果 |
   | 2    | threshold | 阈值     |
 
-- connection_weight中的连接$v_{ih}$或$w_{hj}$包含以下属性：
+- connection_i_h、connection_h_o中的连接$v_{ih}$或$w_{hj}$包含以下属性：
 
+  > 此处用$v_{ih}$及$w_{hj}$下标与书中一致，实际使用$connection_{ih}$及$connection_{ho}$便于理解
+  
   | #    | 名称   | 描述           |
   | ---- | ------ | -------------- |
-  | 1    | from   | 上一层节点idx  |
-  | 2    | to     | 下一层节点idx  |
-  | 3    | weight | 当前连接的权重 |
+  | 1    | weight | 当前连接的权重 |
 
