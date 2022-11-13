@@ -1,0 +1,172 @@
+{
+  "data": [
+    {
+      "name": "脐部",
+      "x": 175.0,
+      "y": 0.0
+    },
+    {
+      "name": "根蒂",
+      "x": 175.0,
+      "y": 250.0
+    },
+    {
+      "name": "hidden0",
+      "value": 0.84,
+      "x": 350.0,
+      "y": 0.0,
+      "label": {
+        "formatter": "\n\n\n\n\n\n{c}"
+      }
+    },
+    {
+      "name": "hidden1",
+      "value": 0.44,
+      "x": 350.0,
+      "y": 250.0,
+      "label": {
+        "formatter": "\n\n\n\n\n\n{c}"
+      }
+    },
+    {
+      "name": "好",
+      "value": 0.05,
+      "x": 525.0,
+      "y": 0.0,
+      "label": {
+        "formatter": "\n\n\n{b}\n\n\n{c}"
+      }
+    },
+    {
+      "name": "不好",
+      "value": 0.62,
+      "x": 525.0,
+      "y": 250.0,
+      "label": {
+        "formatter": "\n\n\n{b}\n\n\n{c}"
+      }
+    }
+  ],
+  "links": [
+    {
+      "source": "脐部",
+      "target": "hidden0",
+      "value": "0.79",
+      "label": {
+        "show": true,
+        "formatter": "{c}",
+        "padding": [
+          0,
+          0,
+          0,
+          200
+        ]
+      }
+    },
+    {
+      "source": "脐部",
+      "target": "hidden1",
+      "value": "0.61",
+      "label": {
+        "show": true,
+        "formatter": "{c}",
+        "padding": [
+          0,
+          0,
+          0,
+          200
+        ]
+      }
+    },
+    {
+      "source": "根蒂",
+      "target": "hidden0",
+      "value": "0.8",
+      "label": {
+        "show": true,
+        "formatter": "{c}",
+        "padding": [
+          0,
+          0,
+          0,
+          200
+        ]
+      }
+    },
+    {
+      "source": "根蒂",
+      "target": "hidden1",
+      "value": "0.06",
+      "label": {
+        "show": true,
+        "formatter": "{c}",
+        "padding": [
+          0,
+          0,
+          0,
+          200
+        ]
+      }
+    },
+    {
+      "source": "hidden0",
+      "target": "好",
+      "value": "0.01",
+      "label": {
+        "show": true,
+        "formatter": "{c}",
+        "padding": [
+          0,
+          0,
+          0,
+          200
+        ]
+      }
+    },
+    {
+      "source": "hidden0",
+      "target": "不好",
+      "value": "0.41",
+      "label": {
+        "show": true,
+        "formatter": "{c}",
+        "padding": [
+          0,
+          0,
+          0,
+          200
+        ]
+      }
+    },
+    {
+      "source": "hidden1",
+      "target": "好",
+      "value": "0.76",
+      "label": {
+        "show": true,
+        "formatter": "{c}",
+        "padding": [
+          0,
+          0,
+          0,
+          200
+        ]
+      }
+    },
+    {
+      "source": "hidden1",
+      "target": "不好",
+      "value": "0.85",
+      "label": {
+        "show": true,
+        "formatter": "{c}",
+        "padding": [
+          0,
+          0,
+          0,
+          200
+        ]
+      }
+    }
+  ]
+}

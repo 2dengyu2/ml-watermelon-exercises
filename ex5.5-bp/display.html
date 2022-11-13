@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>5.5 神经网络</title>
+    <script src="https://cdn.staticfile.org/echarts/5.4.0/echarts.min.js"></script>
+    <style>
+        #main {
+            width: 800px;
+            height: 600px;
+            border: 1px solid whitesmoke;
+        }
+    </style>
+</head>
+<body>
+<div id="main"></div>
+<script>
+    const fetchData = () => {
+        return fetch('./nn.json')
+            .then(res => res.json())
+    }
+    const chartDom = document.getElementById('main');
+    const myChart = echarts.init(chartDom);
+    let option;
+
+    option = {
+        title: {
+            text: '5.5 神经网络'
+        },
+        tooltip: {},
+        animationDurationUpdate: 1500,
+        animationEasingUpdate: 'quinticInOut',
+        series: [
+            {
+                type: 'graph',
+                layout: 'none',
+                symbolSize: 50,
+                roam: true,
+                label: {
+                    show: true
+                },
+                edgeSymbol: ['circle', 'arrow'],
+                edgeSymbolSize: [4, 10],
+                edgeLabel: {
+                    fontSize: 20
+                },
+                lineStyle: {
+                    opacity: 0.9,
+                    width: 2,
+                    curveness: 0
+                }
+            }
+        ]
+    };
+    fetchData().then(json => {
+        option.series[0].data = json.data
+        option.series[0].links = json.links
+        option && myChart.setOption(option);
+        setInterval(function () {
+            fetchData().then(json => {
+                option = myChart.getOption()
+                option.series[0].data = json.data
+                option.series[0].links = json.links
+                myChart.setOption(option)
+            })
+        }, 3000);
+    })
+
+</script>
+</body>
+</html>
