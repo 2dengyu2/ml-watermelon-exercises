@@ -6,6 +6,7 @@
 # @Email   : 649355204@qq.com
 # @File    : standard_bp.py
 # @Software: PyCharm
+import math
 import random
 import json
 from pandas import DataFrame
@@ -13,6 +14,10 @@ from pandas import DataFrame
 from dataset.InitDataset import init_dataset, RESULT_ATTR
 
 learning_rate = 0.1
+
+
+def sigmoid(x):
+    return 1 / (1 + math.exp(-x))
 
 
 class BackPropagationNeuralNetwork(object):
@@ -25,26 +30,68 @@ class BackPropagationNeuralNetwork(object):
     connection_i_h = []
     # 隐藏层=>输出层
     connection_h_o = []
+    epoch = 10
     _attr_list = []
     _hidden_layer_node_count = 2
     _seed = 5.5
 
-    def __init__(self, dataset, learning_rate, attr_list, hidden_layer_node_count, seed=5.5):
+    def __init__(self, dataset, attr_list, hidden_layer_node_count, learning_rate, epoch, seed=5.5):
         # 初始化数据集及学习率
         self.n = learning_rate
         self._attr_list = attr_list
         self._hidden_layer_node_count = hidden_layer_node_count
+        self.epoch = epoch
         self._seed = seed
-        # 清晰数据集
+        # 清洗数据集
         self.D = self.wash(dataset)
+        self._x = self.D[self._attr_list]
+        self._y = self.D[RESULT_ATTR]
+        self._m = len(self.D)
         # 初始化连接权及各节点阈值
         random.seed(5.5)
         self.input_layer, self.hidden_layer, self.output_layer = self.init_node()
         self.connection_i_h, self.connection_h_o = self.init_connection()
+        # output layer 神经元个数
+        self._l = len(self.output_layer)
+        # hidden layer 神经元个数
+        self._q = len(self.hidden_layer)
+        # input layer 神经元个数
+        self._d = len(self.input_layer)
         self.display()
 
     def training(self):
-        return None
+        """
+        P104 图5.8 误差逆传播算法
+        """
+        for epoch in range(self.epoch):
+            # 对于每个样本的输入x_k、输出y_k
+            for k in range(self._m):
+                x_k = self._x.iloc[k]
+                y_k = self._y.iloc[k]
+                # 计算当前样本的输出y_hat_k
+                y_hat_k = self.calculate_sample_output_by_5_3()
+                # 计算输出层神经元梯度g_j
+                g_j = self.calculate_output_layer_gradient_by_5_10()
+                # 计算隐层神经元梯度e_h
+                e_h = self.calculate_hidden_layer_gradient_by_5_15()
+                # 更新连接权w_hj、v_ih与阈值theta_j，gamma_h
+                self.update_connect_weight_by_5_11_to_14()
+
+    def update_connect_weight_by_5_11_to_14(self):
+        pass
+
+    def calculate_hidden_layer_gradient_by_5_15(self):
+        pass
+
+    def calculate_output_layer_gradient_by_5_10(self):
+        pass
+
+    def calculate_sample_output_by_5_3(self):
+        y_hat_k = []
+        for j in range(self._l):
+            # sigmoid(输入值-阈值)
+            y_hat_k.append(sigmoid(self.beta(j) - self.theta(j)))
+        return y_hat_k
 
     def save(self):
         return None
@@ -142,10 +189,29 @@ class BackPropagationNeuralNetwork(object):
         with open('./nn.json', 'w', encoding='utf8') as f:
             json.dump({"data": [*_data_i, *_data_h, *_data_o], "links": links}, f, ensure_ascii=False, indent=2)
 
+    def alpha(self, h):
+        sum = 0
+        for i in range(self._d):
+            sum += self.connection_i_h[i][h]['weight'] * self.input_layer[i]['attr_value']
+        return sum
+
+    def beta(self, j):
+        # beta_j = sum(w_HiddenJ * b_Hidden)
+        # 第j个输出神经元的输入=sum(隐藏层输出层的每个连接权*此隐藏层神经元的阈值)
+        sum = 0
+        for h in range(self._q):
+            sum += self.connection_h_o[h][j]['weight'] * self.hidden_layer[h]['threshold']
+        return sum
+
+    def theta(self, j):
+        # theta_j: 第j个输出层神经元的阈值
+        return self.output_layer[j]['threshold']
+
 
 if __name__ == '__main__':
     D = init_dataset('3.0')
     n = learning_rate
-    nn = BackPropagationNeuralNetwork(dataset=D, learning_rate=n, attr_list=['脐部', '根蒂'], hidden_layer_node_count=2)
+    nn = BackPropagationNeuralNetwork(dataset=D, attr_list=['脐部', '根蒂'], hidden_layer_node_count=2,
+                                      learning_rate=n, epoch=100)
     nn.training()
     nn.save()
