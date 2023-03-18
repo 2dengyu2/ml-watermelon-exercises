@@ -271,11 +271,11 @@ class BackPropagationNeuralNetwork(object):
         with open('./nn.json', 'w', encoding='utf8') as f:
             json.dump({"data": [*_data_i, *_data_h, *_data_o], "links": links}, f, ensure_ascii=False, indent=2)
 
-    # def alpha(self, h):
-    #     sum = 0
-    #     for i in range(self._d_input):
-    #         sum += self.connection_i_h[i][h]['weight'] * self.input_layer[i]['attr_value']
-    #     return sum
+    def alpha(self, x, h):
+        sum = 0
+        for i in range(self._d_input):
+            sum += self.connection_i_h[i][h]['weight'] * x[i]
+        return sum
 
     def beta(self, j):
         # beta_j = sum(w_HiddenJ * b_Hidden)
@@ -289,6 +289,38 @@ class BackPropagationNeuralNetwork(object):
         # theta_j: 第j个输出层神经元的阈值
         return self.output_layer[j]['threshold']
 
+    def gamma(self, h):
+        # gamma_h: 第h个隐层神经元的阈值
+        return self.hidden_layer[h]['threshold']
+
+    def validate(self):
+        for k in range(self._m):
+            x_k = self._x.iloc[k]
+            y_k = self._y[k]
+            # 计算隐层输入
+            _alpha = []
+            for h in range(self._q_hidden):
+                sum = 0
+                for i in range(self._d_input):
+                    sum += self.alpha(x_k, h)
+                    _alpha.append(sum)
+            # 计算隐层输出
+            _h_output = []
+            for h in range(self._q_hidden):
+                _h_output.append(sigmoid(_alpha[h] - self.gamma(h)))
+            # 计算输出层输入
+            _j_input = []
+            for j in range(self._l_output):
+                sum = 0
+                for h in range(self._q_hidden):
+                    sum += self.connection_h_o[h][j]['weight'] * _h_output[h]
+                _j_input.append(sum)
+            # 结果
+            res = []
+            for j in range(self._l_output):
+                res.append(sigmoid(_j_input[j] - self.theta(j)))
+            print(res)
+
 
 if __name__ == '__main__':
     D = init_dataset('3.0')
@@ -296,4 +328,5 @@ if __name__ == '__main__':
     nn = BackPropagationNeuralNetwork(dataset=D, attr_list=['脐部', '根蒂'], hidden_layer_node_count=2,
                                       learning_rate=n, epoch=100)
     nn.training()
+    nn.validate()
     nn.save()
