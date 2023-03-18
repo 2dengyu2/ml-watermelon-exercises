@@ -34,7 +34,7 @@ def get_result_list(l):
 
 class BackPropagationNeuralNetwork(object):
     D = []
-    n = 0.01
+    n = 0.1
     input_layer = []
     hidden_layer = []
     output_layer = []
@@ -124,15 +124,15 @@ class BackPropagationNeuralNetwork(object):
             dlt_gamma_hidden.append(dlt_gamma_h)
         # 计算更新阈值、连接权
         for j in range(self._l_output):
-            self.output_layer[j]['threshold'] = dlt_theta_output[j]
+            self.output_layer[j]['threshold'] += dlt_theta_output[j]
         for h in range(self._q_hidden):
             for j in range(self._l_output):
-                self.connection_h_o[h][j]['weight'] = dlt_w_hidden_output[h][j]
+                self.connection_h_o[h][j]['weight'] += dlt_w_hidden_output[h][j]
         for h in range(self._q_hidden):
-            self.hidden_layer[h]['threshold'] = dlt_gamma_hidden[h]
+            self.hidden_layer[h]['threshold'] += dlt_gamma_hidden[h]
         for i in range(self._d_input):
             for h in range(self._q_hidden):
-                self.connection_i_h[i][h]['weight'] = dlt_v_input_hidden[i][h]
+                self.connection_i_h[i][h]['weight'] += dlt_v_input_hidden[i][h]
 
     def calculate_hidden_layer_gradient_by_5_15(self, g_g_output):
         """
