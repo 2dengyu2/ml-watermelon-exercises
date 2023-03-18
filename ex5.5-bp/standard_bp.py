@@ -9,6 +9,8 @@
 import math
 import random
 import json
+import time
+
 from pandas import DataFrame
 
 from dataset.InitDataset import init_dataset, RESULT_ATTR
@@ -86,6 +88,8 @@ class BackPropagationNeuralNetwork(object):
                 g_e_hidden = self.calculate_hidden_layer_gradient_by_5_15(g_g_output)
                 # 更新连接权w_hj、v_ih与阈值theta_j，gamma_h
                 self.update_connect_weight_by_5_11_to_14(g_g_output, g_e_hidden)
+            if epoch % 10 == 0:
+                self.display()
 
     def update_connect_weight_by_5_11_to_14(self, g_g_output, g_e_hidden):
         # 计算更新后的隐层->输出层连接权
