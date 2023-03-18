@@ -20,6 +20,16 @@ def sigmoid(x):
     return 1 / (1 + math.exp(-x))
 
 
+def get_result_list(l):
+    res_list = []
+    for i, value in enumerate(l):
+        if value == '好':
+            res_list.append([0, 1])
+        else:
+            res_list.append([1, 0])
+    return res_list
+
+
 class BackPropagationNeuralNetwork(object):
     D = []
     n = 0.1
@@ -45,7 +55,7 @@ class BackPropagationNeuralNetwork(object):
         # 清洗数据集
         self.D = self.wash(dataset)
         self._x = self.D[self._attr_list]
-        self._y = self.D[RESULT_ATTR]
+        self._y = get_result_list(self.D[RESULT_ATTR])
         self._m = len(self.D)
         # 初始化连接权及各节点阈值
         random.seed(5.5)
@@ -67,7 +77,7 @@ class BackPropagationNeuralNetwork(object):
             # 对于每个样本的输入x_k、输出y_k
             for k in range(self._m):
                 x_k = self._x.iloc[k]
-                y_k = self._y.iloc[k]
+                y_k = self._y[k]
                 # 计算当前样本的输出y_hat_k
                 y_hat_k = self.calculate_sample_output_by_5_3()
                 # 计算输出层神经元梯度g_j
@@ -132,7 +142,7 @@ class BackPropagationNeuralNetwork(object):
             sum = 0
             for j in range(self._l_output):
                 w_h_j = self.connection_h_o[h][j]['weight']
-                g_j = g[j]
+                g_j = g_g_output[j]
                 sum += w_h_j * g_j
             g.append(b_h * (1 - b_h) * sum)
         return g
@@ -189,7 +199,7 @@ class BackPropagationNeuralNetwork(object):
         # 每个参与训练的属性添加一个input node
         for attr in self._attr_list:
             # 属性值，例如脐部、根蒂
-            _input_layer.append({'attr_value': attr})
+            _input_layer.append({'attr_value': self._attr_list.index(attr)})
         # 根据隐藏层节点数初始化节点
         for idx in range(self._hidden_layer_node_count):
             _hidden_layer.append({'threshold': random.random()})

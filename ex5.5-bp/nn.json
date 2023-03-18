@@ -1,12 +1,12 @@
 {
   "data": [
     {
-      "name": "脐部",
+      "name": 0,
       "x": 175.0,
       "y": 0.0
     },
     {
-      "name": "根蒂",
+      "name": 1,
       "x": 175.0,
       "y": 250.0
     },
@@ -49,7 +49,7 @@
   ],
   "links": [
     {
-      "source": "脐部",
+      "source": 0,
       "target": "hidden0",
       "value": "0.79",
       "label": {
@@ -64,7 +64,7 @@
       }
     },
     {
-      "source": "脐部",
+      "source": 0,
       "target": "hidden1",
       "value": "0.61",
       "label": {
@@ -79,7 +79,7 @@
       }
     },
     {
-      "source": "根蒂",
+      "source": 1,
       "target": "hidden0",
       "value": "0.8",
       "label": {
@@ -94,7 +94,7 @@
       }
     },
     {
-      "source": "根蒂",
+      "source": 1,
       "target": "hidden1",
       "value": "0.06",
       "label": {
