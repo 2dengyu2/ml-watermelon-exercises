@@ -34,7 +34,7 @@ def get_result_list(l):
 
 class BackPropagationNeuralNetwork(object):
     D = []
-    n = 0.1
+    n = 0.01
     input_layer = []
     hidden_layer = []
     output_layer = []
@@ -87,11 +87,11 @@ class BackPropagationNeuralNetwork(object):
                 # 计算隐层神经元梯度e_h
                 g_e_hidden = self.calculate_hidden_layer_gradient_by_5_15(g_g_output)
                 # 更新连接权w_hj、v_ih与阈值theta_j，gamma_h
-                self.update_connect_weight_by_5_11_to_14(g_g_output, g_e_hidden)
+                self.update_connect_weight_by_5_11_to_14(x_k, g_g_output, g_e_hidden)
             if epoch % 10 == 0:
                 self.display()
 
-    def update_connect_weight_by_5_11_to_14(self, g_g_output, g_e_hidden):
+    def update_connect_weight_by_5_11_to_14(self, x_k, g_g_output, g_e_hidden):
         # 计算更新后的隐层->输出层连接权
         dlt_w_hidden_output = []
         for h in range(self._q_hidden):
@@ -109,7 +109,7 @@ class BackPropagationNeuralNetwork(object):
         # 计算更新后的输入层->隐层连接权
         dlt_v_input_hidden = []
         for i in range(self._d_input):
-            x_i = self.input_layer[i]['attr_value']
+            x_i = x_k[i]
             dlt_v_i = []
             for h in range(self._q_hidden):
                 e_h = g_e_hidden[h]
@@ -201,9 +201,9 @@ class BackPropagationNeuralNetwork(object):
         _hidden_layer = []
         _output_layer = []
         # 每个参与训练的属性添加一个input node
-        for attr in self._attr_list:
+        for i in range(len(self._attr_list)):
             # 属性值，例如脐部、根蒂
-            _input_layer.append({'attr_value': self._attr_list.index(attr)})
+            _input_layer.append(i)
         # 根据隐藏层节点数初始化节点
         for idx in range(self._hidden_layer_node_count):
             _hidden_layer.append({'threshold': random.random()})
@@ -239,7 +239,7 @@ class BackPropagationNeuralNetwork(object):
         _len_h = len(self.hidden_layer)
         _len_o = len(self.output_layer)
         for idx in range(_len_i):
-            _data_i.append({'name': self.input_layer[idx]['attr_value'], 'x': _x_max / 4, 'y': _y_max / _len_i * idx})
+            _data_i.append({'name': self._attr_list[idx], 'x': _x_max / 4, 'y': _y_max / _len_i * idx})
         for idx in range(_len_h):
             threshold = round(self.hidden_layer[idx]['threshold'], 2)
             _data_h.append({
@@ -271,11 +271,11 @@ class BackPropagationNeuralNetwork(object):
         with open('./nn.json', 'w', encoding='utf8') as f:
             json.dump({"data": [*_data_i, *_data_h, *_data_o], "links": links}, f, ensure_ascii=False, indent=2)
 
-    def alpha(self, h):
-        sum = 0
-        for i in range(self._d_input):
-            sum += self.connection_i_h[i][h]['weight'] * self.input_layer[i]['attr_value']
-        return sum
+    # def alpha(self, h):
+    #     sum = 0
+    #     for i in range(self._d_input):
+    #         sum += self.connection_i_h[i][h]['weight'] * self.input_layer[i]['attr_value']
+    #     return sum
 
     def beta(self, j):
         # beta_j = sum(w_HiddenJ * b_Hidden)
