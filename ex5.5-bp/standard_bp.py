@@ -89,6 +89,14 @@ class BackPropagationNeuralNetwork(object):
                 # 更新连接权w_hj、v_ih与阈值theta_j，gamma_h
                 self.update_connect_weight_by_5_11_to_14(x_k, g_g_output, g_e_hidden)
             if epoch % 10 == 0:
+                total_loss = 0
+                for k in range(self._m):
+                    x_k = self._x.iloc[k]
+                    y_k = self._y[k]
+                    y_hat_k = self.calculate_sample_output_by_5_3()
+                    for j in range(self._l_output):
+                        total_loss += (y_k[j] - y_hat_k[j]) ** 2
+                print(f'epoch {epoch}: loss={total_loss:.6f}')
                 self.display()
 
     def update_connect_weight_by_5_11_to_14(self, x_k, g_g_output, g_e_hidden):
