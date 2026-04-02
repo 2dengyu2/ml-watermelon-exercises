@@ -296,6 +296,7 @@ class BackPropagationNeuralNetwork(object):
         return self.hidden_layer[h]['threshold']
 
     def validate(self):
+        correct = 0
         for k in range(self._m):
             x_k = self._x.iloc[k]
             y_k = self._y[k]
@@ -318,7 +319,13 @@ class BackPropagationNeuralNetwork(object):
             res = []
             for j in range(self._l_output):
                 res.append(sigmoid(_j_input[j] - self.theta(j)))
-            print(res)
+            pred = '好' if res[1] > res[0] else '坏'
+            actual = '好' if y_k == [0, 1] else '坏'
+            match = '✓' if pred == actual else '✗'
+            if pred == actual:
+                correct += 1
+            print(f'样本{k}: 预测={pred}({[round(v, 4) for v in res]}), 实际={actual} {match}')
+        print(f'准确率: {correct}/{self._m} = {correct / self._m:.2%}')
 
 
 if __name__ == '__main__':
