@@ -109,7 +109,7 @@ class BackPropagationNeuralNetwork(object):
         # 计算更新后的输入层->隐层连接权
         dlt_v_input_hidden = []
         for i in range(self._d_input):
-            x_i = x_k[i]
+            x_i = float(x_k.iloc[i])
             dlt_v_i = []
             for h in range(self._q_hidden):
                 e_h = g_e_hidden[h]
@@ -223,7 +223,7 @@ class BackPropagationNeuralNetwork(object):
             for idx in range(len(_val_list)):
                 _map[_val_list[idx]] = idx
             for idx in range(len(_d[attr])):
-                _result_dataset.loc[idx, attr] = _map[_d.loc[idx, attr]]
+                _result_dataset.loc[idx, attr] = str(_map[_d.loc[idx, attr]])
         return _result_dataset
 
     def display(self):
@@ -274,7 +274,7 @@ class BackPropagationNeuralNetwork(object):
     def alpha(self, x, h):
         sum = 0
         for i in range(self._d_input):
-            sum += self.connection_i_h[i][h]['weight'] * x[i]
+            sum += self.connection_i_h[i][h]['weight'] * float(x.iloc[i])
         return sum
 
     def beta(self, j):

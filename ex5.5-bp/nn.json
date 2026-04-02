@@ -1,18 +1,18 @@
 {
   "data": [
     {
-      "name": 0,
+      "name": "脐部",
       "x": 175.0,
       "y": 0.0
     },
     {
-      "name": 1,
+      "name": "根蒂",
       "x": 175.0,
       "y": 250.0
     },
     {
       "name": "hidden0",
-      "value": 0.84,
+      "value": 0.87,
       "x": 350.0,
       "y": 0.0,
       "label": {
@@ -21,7 +21,7 @@
     },
     {
       "name": "hidden1",
-      "value": 0.44,
+      "value": 0.52,
       "x": 350.0,
       "y": 250.0,
       "label": {
@@ -30,7 +30,7 @@
     },
     {
       "name": "好",
-      "value": 0.05,
+      "value": 0.11,
       "x": 525.0,
       "y": 0.0,
       "label": {
@@ -39,7 +39,7 @@
     },
     {
       "name": "不好",
-      "value": 0.62,
+      "value": 0.83,
       "x": 525.0,
       "y": 250.0,
       "label": {
@@ -49,9 +49,9 @@
   ],
   "links": [
     {
-      "source": 0,
+      "source": "脐部",
       "target": "hidden0",
-      "value": "0.79",
+      "value": "0.37",
       "label": {
         "show": true,
         "formatter": "{c}",
@@ -64,9 +64,9 @@
       }
     },
     {
-      "source": 0,
+      "source": "脐部",
       "target": "hidden1",
-      "value": "0.61",
+      "value": "0.39",
       "label": {
         "show": true,
         "formatter": "{c}",
@@ -79,9 +79,9 @@
       }
     },
     {
-      "source": 1,
+      "source": "根蒂",
       "target": "hidden0",
-      "value": "0.8",
+      "value": "0.52",
       "label": {
         "show": true,
         "formatter": "{c}",
@@ -94,9 +94,9 @@
       }
     },
     {
-      "source": 1,
+      "source": "根蒂",
       "target": "hidden1",
-      "value": "0.06",
+      "value": "-0.1",
       "label": {
         "show": true,
         "formatter": "{c}",
@@ -111,7 +111,7 @@
     {
       "source": "hidden0",
       "target": "好",
-      "value": "0.01",
+      "value": "-0.05",
       "label": {
         "show": true,
         "formatter": "{c}",
@@ -126,7 +126,7 @@
     {
       "source": "hidden0",
       "target": "不好",
-      "value": "0.41",
+      "value": "0.24",
       "label": {
         "show": true,
         "formatter": "{c}",
@@ -141,7 +141,7 @@
     {
       "source": "hidden1",
       "target": "好",
-      "value": "0.76",
+      "value": "0.73",
       "label": {
         "show": true,
         "formatter": "{c}",
@@ -156,7 +156,7 @@
     {
       "source": "hidden1",
       "target": "不好",
-      "value": "0.85",
+      "value": "0.75",
       "label": {
         "show": true,
         "formatter": "{c}",
