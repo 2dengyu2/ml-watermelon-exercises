@@ -98,13 +98,13 @@ class BackPropagationNeuralNetwork(object):
             b_h = self.hidden_layer[h]['threshold']
             dlt_w_h = []
             for j in range(self._l_output):
-                dlt_w_h_j = learning_rate * g_g_output[j] * b_h
+                dlt_w_h_j = self.n * g_g_output[j] * b_h
                 dlt_w_h.append(dlt_w_h_j)
             dlt_w_hidden_output.append(dlt_w_h)
         # 计算更新后的输出层阈值
         dlt_theta_output = []
         for j in range(self._l_output):
-            dlt_theta_j = -learning_rate * g_g_output[j]
+            dlt_theta_j = -self.n * g_g_output[j]
             dlt_theta_output.append(dlt_theta_j)
         # 计算更新后的输入层->隐层连接权
         dlt_v_input_hidden = []
@@ -113,14 +113,14 @@ class BackPropagationNeuralNetwork(object):
             dlt_v_i = []
             for h in range(self._q_hidden):
                 e_h = g_e_hidden[h]
-                dlt_v_i_h = learning_rate * e_h * x_i
+                dlt_v_i_h = self.n * e_h * x_i
                 dlt_v_i.append(dlt_v_i_h)
             dlt_v_input_hidden.append(dlt_v_i)
         # 计算更新后的隐层阈值
         dlt_gamma_hidden = []
         for h in range(self._q_hidden):
             e_h = g_e_hidden[h]
-            dlt_gamma_h = -learning_rate * e_h
+            dlt_gamma_h = -self.n * e_h
             dlt_gamma_hidden.append(dlt_gamma_h)
         # 计算更新阈值、连接权
         for j in range(self._l_output):
@@ -300,10 +300,7 @@ class BackPropagationNeuralNetwork(object):
             # 计算隐层输入
             _alpha = []
             for h in range(self._q_hidden):
-                sum = 0
-                for i in range(self._d_input):
-                    sum += self.alpha(x_k, h)
-                    _alpha.append(sum)
+                _alpha.append(self.alpha(x_k, h))
             # 计算隐层输出
             _h_output = []
             for h in range(self._q_hidden):
