@@ -85,7 +85,7 @@ class BackPropagationNeuralNetwork(object):
                 # 计算输出层神经元梯度g_j
                 g_g_output = self.calculate_output_layer_gradient_by_5_10(y_k, y_hat_k)
                 # 计算隐层神经元梯度e_h
-                g_e_hidden = self.calculate_hidden_layer_gradient_by_5_15(g_g_output)
+                g_e_hidden = self.calculate_hidden_layer_gradient_by_5_15(x_k, g_g_output)
                 # 更新连接权w_hj、v_ih与阈值theta_j，gamma_h
                 self.update_connect_weight_by_5_11_to_14(x_k, g_g_output, g_e_hidden)
             if epoch % 10 == 0:
@@ -95,7 +95,8 @@ class BackPropagationNeuralNetwork(object):
         # 计算更新后的隐层->输出层连接权
         dlt_w_hidden_output = []
         for h in range(self._q_hidden):
-            b_h = self.hidden_layer[h]['threshold']
+            _alpha = self.alpha(x_k, h)
+            b_h = sigmoid(_alpha - self.hidden_layer[h]['threshold'])
             dlt_w_h = []
             for j in range(self._l_output):
                 dlt_w_h_j = self.n * g_g_output[j] * b_h
@@ -134,7 +135,7 @@ class BackPropagationNeuralNetwork(object):
             for h in range(self._q_hidden):
                 self.connection_i_h[i][h]['weight'] += dlt_v_input_hidden[i][h]
 
-    def calculate_hidden_layer_gradient_by_5_15(self, g_g_output):
+    def calculate_hidden_layer_gradient_by_5_15(self, x_k, g_g_output):
         """
         计算隐层梯度值e_k
         :param g_g_output: 输出层梯度值
@@ -142,7 +143,8 @@ class BackPropagationNeuralNetwork(object):
         """
         g = []
         for h in range(self._q_hidden):
-            b_h = self.hidden_layer[h]['threshold']
+            _alpha = self.alpha(x_k, h)
+            b_h = sigmoid(_alpha - self.hidden_layer[h]['threshold'])
             sum = 0
             for j in range(self._l_output):
                 w_h_j = self.connection_h_o[h][j]['weight']

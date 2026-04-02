@@ -12,7 +12,7 @@
     },
     {
       "name": "hidden0",
-      "value": 0.87,
+      "value": 1.45,
       "x": 350.0,
       "y": 0.0,
       "label": {
@@ -21,7 +21,7 @@
     },
     {
       "name": "hidden1",
-      "value": 0.52,
+      "value": 0.9,
       "x": 350.0,
       "y": 250.0,
       "label": {
@@ -30,7 +30,7 @@
     },
     {
       "name": "好",
-      "value": 0.11,
+      "value": 2.19,
       "x": 525.0,
       "y": 0.0,
       "label": {
@@ -39,7 +39,7 @@
     },
     {
       "name": "不好",
-      "value": 0.83,
+      "value": -0.96,
       "x": 525.0,
       "y": 250.0,
       "label": {
@@ -51,7 +51,7 @@
     {
       "source": "脐部",
       "target": "hidden0",
-      "value": "0.37",
+      "value": "1.43",
       "label": {
         "show": true,
         "formatter": "{c}",
@@ -66,7 +66,7 @@
     {
       "source": "脐部",
       "target": "hidden1",
-      "value": "0.39",
+      "value": "1.06",
       "label": {
         "show": true,
         "formatter": "{c}",
@@ -81,7 +81,7 @@
     {
       "source": "根蒂",
       "target": "hidden0",
-      "value": "0.52",
+      "value": "0.99",
       "label": {
         "show": true,
         "formatter": "{c}",
@@ -96,7 +96,7 @@
     {
       "source": "根蒂",
       "target": "hidden1",
-      "value": "-0.1",
+      "value": "0.26",
       "label": {
         "show": true,
         "formatter": "{c}",
@@ -111,7 +111,7 @@
     {
       "source": "hidden0",
       "target": "好",
-      "value": "-0.05",
+      "value": "1.2",
       "label": {
         "show": true,
         "formatter": "{c}",
@@ -126,7 +126,7 @@
     {
       "source": "hidden0",
       "target": "不好",
-      "value": "0.24",
+      "value": "-1.12",
       "label": {
         "show": true,
         "formatter": "{c}",
@@ -141,7 +141,7 @@
     {
       "source": "hidden1",
       "target": "好",
-      "value": "0.73",
+      "value": "1.17",
       "label": {
         "show": true,
         "formatter": "{c}",
@@ -156,7 +156,7 @@
     {
       "source": "hidden1",
       "target": "不好",
-      "value": "0.75",
+      "value": "0.13",
       "label": {
         "show": true,
         "formatter": "{c}",
