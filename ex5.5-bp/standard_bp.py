@@ -78,10 +78,11 @@ class BackPropagationNeuralNetwork(object):
         for epoch in range(self.epoch):
             # 对于每个样本的输入x_k、输出y_k
             for k in range(self._m):
+                self._current_k = k
                 x_k = self._x.iloc[k]
                 y_k = self._y[k]
                 # 计算当前样本的输出y_hat_k
-                y_hat_k = self.calculate_sample_output_by_5_3()
+                y_hat_k = self.calculate_sample_output_by_5_3(x_k)
                 # 计算输出层神经元梯度g_j
                 g_g_output = self.calculate_output_layer_gradient_by_5_10(y_k, y_hat_k)
                 # 计算隐层神经元梯度e_h
@@ -91,20 +92,25 @@ class BackPropagationNeuralNetwork(object):
             if epoch % 10 == 0:
                 total_loss = 0
                 for k in range(self._m):
+                    self._current_k = k
                     x_k = self._x.iloc[k]
                     y_k = self._y[k]
-                    y_hat_k = self.calculate_sample_output_by_5_3()
+                    y_hat_k = self.calculate_sample_output_by_5_3(x_k)
                     for j in range(self._l_output):
                         total_loss += (y_k[j] - y_hat_k[j]) ** 2
                 print(f'epoch {epoch}: loss={total_loss:.6f}')
                 self.display()
 
+    def calculate_bh(self, x_k, h):
+        _alpha = self.alpha(x_k, h)
+        b_h = sigmoid(_alpha - self.hidden_layer[h]['threshold'])
+        return b_h
+
     def update_connect_weight_by_5_11_to_14(self, x_k, g_g_output, g_e_hidden):
         # 计算更新后的隐层->输出层连接权
         dlt_w_hidden_output = []
         for h in range(self._q_hidden):
-            _alpha = self.alpha(x_k, h)
-            b_h = sigmoid(_alpha - self.hidden_layer[h]['threshold'])
+            b_h = self.calculate_bh(x_k, h)
             dlt_w_h = []
             for j in range(self._l_output):
                 dlt_w_h_j = self.n * g_g_output[j] * b_h
@@ -174,7 +180,7 @@ class BackPropagationNeuralNetwork(object):
             g.append(g_j)
         return g
 
-    def calculate_sample_output_by_5_3(self):
+    def calculate_sample_output_by_5_3(self, x_k):
         """
         计算当前参数样本输出
         :return: y_hat_k
@@ -182,7 +188,7 @@ class BackPropagationNeuralNetwork(object):
         y_hat_k = []
         for j in range(self._l_output):
             # sigmoid(输入值-阈值)
-            y_hat_k.append(sigmoid(self.beta(j) - self.theta(j)))
+            y_hat_k.append(sigmoid(self.beta(j, x_k) - self.theta(j)))
         return y_hat_k
 
     def save(self):
@@ -226,14 +232,18 @@ class BackPropagationNeuralNetwork(object):
         # 只保留参与计算的字段及结果
         _d = dataset[[*self._attr_list, RESULT_ATTR]]
         _result_dataset = _d.copy()
-        # 离散属性转换为数值
         for attr in self._attr_list:
-            _map = {}
-            _val_list = _d[attr].unique()
-            for idx in range(len(_val_list)):
-                _map[_val_list[idx]] = idx
-            for idx in range(len(_d[attr])):
-                _result_dataset.loc[idx, attr] = str(_map[_d.loc[idx, attr]])
+            if _d[attr].dtype in ['float64', 'int64']:
+                # 数值类型直接保留
+                _result_dataset[attr] = _d[attr].astype(float)
+            else:
+                # 离散属性转换为数值
+                _map = {}
+                _val_list = _d[attr].unique()
+                for idx in range(len(_val_list)):
+                    _map[_val_list[idx]] = idx
+                for idx in range(len(_d[attr])):
+                    _result_dataset.loc[idx, attr] = str(_map[_d.loc[idx, attr]])
         return _result_dataset
 
     def display(self):
@@ -287,12 +297,13 @@ class BackPropagationNeuralNetwork(object):
             sum += self.connection_i_h[i][h]['weight'] * float(x.iloc[i])
         return sum
 
-    def beta(self, j):
+    def beta(self, j, x_k):
         # beta_j = sum(w_HiddenJ * b_Hidden)
-        # 第j个输出神经元的输入=sum(隐藏层输出层的每个连接权*此隐藏层神经元的阈值)
+        # 第j个输出神经元的输入=sum(隐藏层输出层的每个连接权*隐层神经元的输出值)
         sum = 0
         for h in range(self._q_hidden):
-            sum += self.connection_h_o[h][j]['weight'] * self.hidden_layer[h]['threshold']
+            bh = self.calculate_bh(x_k, h)
+            sum += self.connection_h_o[h][j]['weight'] * bh
         return sum
 
     def theta(self, j):
@@ -339,7 +350,7 @@ class BackPropagationNeuralNetwork(object):
 if __name__ == '__main__':
     D = init_dataset('3.0')
     n = learning_rate
-    nn = BackPropagationNeuralNetwork(dataset=D, attr_list=['脐部', '根蒂'], hidden_layer_node_count=2,
+    nn = BackPropagationNeuralNetwork(dataset=D, attr_list=['色泽', '根蒂', '敲声', '纹理', '脐部', '触感', '密度', '含糖率'], hidden_layer_node_count=2,
                                       learning_rate=n, epoch=100)
     nn.training()
     nn.validate()
