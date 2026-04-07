@@ -1,48 +1,18 @@
 {
   "data": [
     {
-      "name": "色泽",
+      "name": "脐部",
       "x": 175.0,
       "y": 0.0
     },
     {
       "name": "根蒂",
       "x": 175.0,
-      "y": 62.5
-    },
-    {
-      "name": "敲声",
-      "x": 175.0,
-      "y": 125.0
-    },
-    {
-      "name": "纹理",
-      "x": 175.0,
-      "y": 187.5
-    },
-    {
-      "name": "脐部",
-      "x": 175.0,
       "y": 250.0
     },
     {
-      "name": "触感",
-      "x": 175.0,
-      "y": 312.5
-    },
-    {
-      "name": "密度",
-      "x": 175.0,
-      "y": 375.0
-    },
-    {
-      "name": "含糖率",
-      "x": 175.0,
-      "y": 437.5
-    },
-    {
       "name": "hidden0",
-      "value": 1.45,
+      "value": 1.17,
       "x": 350.0,
       "y": 0.0,
       "label": {
@@ -51,7 +21,7 @@
     },
     {
       "name": "hidden1",
-      "value": 1.42,
+      "value": 0.63,
       "x": 350.0,
       "y": 250.0,
       "label": {
@@ -60,7 +30,7 @@
     },
     {
       "name": "好",
-      "value": 1.44,
+      "value": 1.1,
       "x": 525.0,
       "y": 0.0,
       "label": {
@@ -69,7 +39,7 @@
     },
     {
       "name": "不好",
-      "value": -0.93,
+      "value": -0.39,
       "x": 525.0,
       "y": 250.0,
       "label": {
@@ -79,129 +49,9 @@
   ],
   "links": [
     {
-      "source": "色泽",
-      "target": "hidden0",
-      "value": "0.21",
-      "label": {
-        "show": true,
-        "formatter": "{c}",
-        "padding": [
-          0,
-          0,
-          0,
-          200
-        ]
-      }
-    },
-    {
-      "source": "色泽",
-      "target": "hidden1",
-      "value": "-0.05",
-      "label": {
-        "show": true,
-        "formatter": "{c}",
-        "padding": [
-          0,
-          0,
-          0,
-          200
-        ]
-      }
-    },
-    {
-      "source": "根蒂",
-      "target": "hidden0",
-      "value": "0.88",
-      "label": {
-        "show": true,
-        "formatter": "{c}",
-        "padding": [
-          0,
-          0,
-          0,
-          200
-        ]
-      }
-    },
-    {
-      "source": "根蒂",
-      "target": "hidden1",
-      "value": "0.41",
-      "label": {
-        "show": true,
-        "formatter": "{c}",
-        "padding": [
-          0,
-          0,
-          0,
-          200
-        ]
-      }
-    },
-    {
-      "source": "敲声",
-      "target": "hidden0",
-      "value": "-0.02",
-      "label": {
-        "show": true,
-        "formatter": "{c}",
-        "padding": [
-          0,
-          0,
-          0,
-          200
-        ]
-      }
-    },
-    {
-      "source": "敲声",
-      "target": "hidden1",
-      "value": "0.75",
-      "label": {
-        "show": true,
-        "formatter": "{c}",
-        "padding": [
-          0,
-          0,
-          0,
-          200
-        ]
-      }
-    },
-    {
-      "source": "纹理",
-      "target": "hidden0",
-      "value": "1.19",
-      "label": {
-        "show": true,
-        "formatter": "{c}",
-        "padding": [
-          0,
-          0,
-          0,
-          200
-        ]
-      }
-    },
-    {
-      "source": "纹理",
-      "target": "hidden1",
-      "value": "1.82",
-      "label": {
-        "show": true,
-        "formatter": "{c}",
-        "padding": [
-          0,
-          0,
-          0,
-          200
-        ]
-      }
-    },
-    {
       "source": "脐部",
       "target": "hidden0",
-      "value": "0.92",
+      "value": "1.41",
       "label": {
         "show": true,
         "formatter": "{c}",
@@ -216,7 +66,7 @@
     {
       "source": "脐部",
       "target": "hidden1",
-      "value": "0.36",
+      "value": "0.87",
       "label": {
         "show": true,
         "formatter": "{c}",
@@ -229,9 +79,9 @@
       }
     },
     {
-      "source": "触感",
+      "source": "根蒂",
       "target": "hidden0",
-      "value": "0.85",
+      "value": "1.11",
       "label": {
         "show": true,
         "formatter": "{c}",
@@ -244,69 +94,9 @@
       }
     },
     {
-      "source": "触感",
+      "source": "根蒂",
       "target": "hidden1",
-      "value": "0.4",
-      "label": {
-        "show": true,
-        "formatter": "{c}",
-        "padding": [
-          0,
-          0,
-          0,
-          200
-        ]
-      }
-    },
-    {
-      "source": "密度",
-      "target": "hidden0",
-      "value": "0.18",
-      "label": {
-        "show": true,
-        "formatter": "{c}",
-        "padding": [
-          0,
-          0,
-          0,
-          200
-        ]
-      }
-    },
-    {
-      "source": "密度",
-      "target": "hidden1",
-      "value": "-0.48",
-      "label": {
-        "show": true,
-        "formatter": "{c}",
-        "padding": [
-          0,
-          0,
-          0,
-          200
-        ]
-      }
-    },
-    {
-      "source": "含糖率",
-      "target": "hidden0",
-      "value": "0.56",
-      "label": {
-        "show": true,
-        "formatter": "{c}",
-        "padding": [
-          0,
-          0,
-          0,
-          200
-        ]
-      }
-    },
-    {
-      "source": "含糖率",
-      "target": "hidden1",
-      "value": "-0.03",
+      "value": "0.24",
       "label": {
         "show": true,
         "formatter": "{c}",
@@ -321,7 +111,7 @@
     {
       "source": "hidden0",
       "target": "好",
-      "value": "1.28",
+      "value": "1.22",
       "label": {
         "show": true,
         "formatter": "{c}",
@@ -336,7 +126,7 @@
     {
       "source": "hidden0",
       "target": "不好",
-      "value": "-0.55",
+      "value": "-1.27",
       "label": {
         "show": true,
         "formatter": "{c}",
@@ -351,7 +141,7 @@
     {
       "source": "hidden1",
       "target": "好",
-      "value": "1.6",
+      "value": "1.2",
       "label": {
         "show": true,
         "formatter": "{c}",
@@ -366,7 +156,7 @@
     {
       "source": "hidden1",
       "target": "不好",
-      "value": "-1.62",
+      "value": "0.11",
       "label": {
         "show": true,
         "formatter": "{c}",

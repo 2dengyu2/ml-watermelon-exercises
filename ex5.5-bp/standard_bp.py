@@ -350,7 +350,7 @@ class BackPropagationNeuralNetwork(object):
 if __name__ == '__main__':
     D = init_dataset('3.0')
     n = learning_rate
-    nn = BackPropagationNeuralNetwork(dataset=D, attr_list=['色泽', '根蒂', '敲声', '纹理', '脐部', '触感', '密度', '含糖率'], hidden_layer_node_count=2,
+    nn = BackPropagationNeuralNetwork(dataset=D, attr_list=['脐部', '根蒂'], hidden_layer_node_count=2,
                                       learning_rate=n, epoch=100)
     nn.training()
     nn.validate()
