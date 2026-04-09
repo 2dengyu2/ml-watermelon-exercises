@@ -10,6 +10,7 @@ import math
 import random
 import json
 import time
+from itertools import accumulate
 
 from pandas import DataFrame
 
@@ -71,11 +72,20 @@ class BackPropagationNeuralNetwork(object):
         self._d_input = len(self.input_layer)
         self.display()
 
-    def training(self):
+    def training(self, type='standard'):
         """
         P104 图5.8 误差逆传播算法
         """
         for epoch in range(self.epoch):
+            # 隐层->输出层
+            accum_dlt_w = [[0] * self._l_output for _ in range(self._q_hidden)]
+            # 输入->隐层
+            accum_dlt_v = [[0] * self._q_hidden for _ in range(self._d_input)]
+            # 输出层阈值
+            accum_dlt_theta = [0] * self._l_output
+            # 隐层阈值
+            accum_dlt_gamma = [0] * self._q_hidden
+
             # 对于每个样本的输入x_k、输出y_k
             for k in range(self._m):
                 self._current_k = k
@@ -88,7 +98,14 @@ class BackPropagationNeuralNetwork(object):
                 # 计算隐层神经元梯度e_h
                 g_e_hidden = self.calculate_hidden_layer_gradient_by_5_15(x_k, g_g_output)
                 # 更新连接权w_hj、v_ih与阈值theta_j，gamma_h
-                self.update_connect_weight_by_5_11_to_14(x_k, g_g_output, g_e_hidden)
+                if type == 'standard':
+                    self.update_connect_weight_by_5_11_to_14(x_k, g_g_output, g_e_hidden)
+                else:
+                    self.accumulate_connect_weight(x_k, g_g_output, g_e_hidden, accum_dlt_theta, accum_dlt_gamma,
+                                                   accum_dlt_w, accum_dlt_v)
+            if type == 'accumulated':
+                # 更新参数
+                self.update_weight(accum_dlt_gamma, accum_dlt_theta, accum_dlt_v, accum_dlt_w)
             if epoch % 10 == 0:
                 total_loss = 0
                 for k in range(self._m):
@@ -107,6 +124,26 @@ class BackPropagationNeuralNetwork(object):
         return b_h
 
     def update_connect_weight_by_5_11_to_14(self, x_k, g_g_output, g_e_hidden):
+        dlt_gamma_hidden, dlt_theta_output, dlt_v_input_hidden, dlt_w_hidden_output = (
+            self.calculate_dlt(g_e_hidden, g_g_output, x_k))
+        # 计算更新阈值、连接权
+        self.update_weight(dlt_gamma_hidden, dlt_theta_output, dlt_v_input_hidden, dlt_w_hidden_output)
+
+    def accumulate_connect_weight(self, x_k, g_g_output, g_e_hidden, accum_dlt_theta, accum_dlt_gamma, accum_dlt_w,
+                                  accum_dlt_v):
+        dlt_gamma_hidden, dlt_theta_output, dlt_v_input_hidden, dlt_w_hidden_output = (
+            self.calculate_dlt(g_e_hidden, g_g_output, x_k))
+        for h in range(self._q_hidden):
+            for j in range(self._l_output):
+                accum_dlt_w[h][j] += dlt_w_hidden_output[h][j] / self._m
+            accum_dlt_gamma[h] += dlt_gamma_hidden[h] / self._m
+        for i in range(self._d_input):
+            for h in range(self._q_hidden):
+                accum_dlt_v[i][h] += dlt_v_input_hidden[i][h] / self._m
+        for j in range(self._l_output):
+            accum_dlt_theta[j] += dlt_theta_output[j] / self._m
+
+    def calculate_dlt(self, g_e_hidden, g_g_output, x_k):
         # 计算更新后的隐层->输出层连接权
         dlt_w_hidden_output = []
         for h in range(self._q_hidden):
@@ -137,7 +174,9 @@ class BackPropagationNeuralNetwork(object):
             e_h = g_e_hidden[h]
             dlt_gamma_h = -self.n * e_h
             dlt_gamma_hidden.append(dlt_gamma_h)
-        # 计算更新阈值、连接权
+        return dlt_gamma_hidden, dlt_theta_output, dlt_v_input_hidden, dlt_w_hidden_output
+
+    def update_weight(self, dlt_gamma_hidden, dlt_theta_output, dlt_v_input_hidden, dlt_w_hidden_output):
         for j in range(self._l_output):
             self.output_layer[j]['threshold'] += dlt_theta_output[j]
         for h in range(self._q_hidden):
@@ -352,6 +391,7 @@ if __name__ == '__main__':
     n = learning_rate
     nn = BackPropagationNeuralNetwork(dataset=D, attr_list=['脐部', '根蒂'], hidden_layer_node_count=2,
                                       learning_rate=n, epoch=100)
-    nn.training()
+    # type可选standard、accumulated
+    nn.training(type='accumulated')
     nn.validate()
     nn.save()
