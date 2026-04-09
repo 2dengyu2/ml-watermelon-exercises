@@ -6,17 +6,22 @@
 # @Email   : 649355204@qq.com
 # @File    : standard_bp.py
 # @Software: PyCharm
+import json
 import math
 import random
-import json
-import time
-from itertools import accumulate
+from enum import Enum, auto
 
 from pandas import DataFrame
 
 from dataset.InitDataset import init_dataset, RESULT_ATTR
 
 learning_rate = 0.1
+
+
+class TrainingType(Enum):
+    """训练类型枚举"""
+    STANDARD = auto()
+    ACCUMULATED = auto()
 
 
 def sigmoid(x):
@@ -72,7 +77,7 @@ class BackPropagationNeuralNetwork(object):
         self._d_input = len(self.input_layer)
         self.display()
 
-    def training(self, type='standard'):
+    def training(self, train_type: TrainingType = TrainingType.STANDARD):
         """
         P104 图5.8 误差逆传播算法
         """
@@ -98,12 +103,12 @@ class BackPropagationNeuralNetwork(object):
                 # 计算隐层神经元梯度e_h
                 g_e_hidden = self.calculate_hidden_layer_gradient_by_5_15(x_k, g_g_output)
                 # 更新连接权w_hj、v_ih与阈值theta_j，gamma_h
-                if type == 'standard':
+                if train_type == TrainingType.STANDARD:
                     self.update_connect_weight_by_5_11_to_14(x_k, g_g_output, g_e_hidden)
                 else:
                     self.accumulate_connect_weight(x_k, g_g_output, g_e_hidden, accum_dlt_theta, accum_dlt_gamma,
                                                    accum_dlt_w, accum_dlt_v)
-            if type == 'accumulated':
+            if train_type == TrainingType.ACCUMULATED:
                 # 更新参数
                 self.update_weight(accum_dlt_gamma, accum_dlt_theta, accum_dlt_v, accum_dlt_w)
             if epoch % 10 == 0:
@@ -391,7 +396,6 @@ if __name__ == '__main__':
     n = learning_rate
     nn = BackPropagationNeuralNetwork(dataset=D, attr_list=['脐部', '根蒂'], hidden_layer_node_count=2,
                                       learning_rate=n, epoch=100)
-    # type可选standard、accumulated
-    nn.training(type='accumulated')
+    nn.training(train_type=TrainingType.ACCUMULATED)
     nn.validate()
     nn.save()
